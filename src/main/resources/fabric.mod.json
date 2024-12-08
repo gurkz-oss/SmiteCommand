@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "id": "smitecommand",
+  "version": "${version}",
+
+  "name": "SmiteCommand",
+  "description": "a command that summons a lightning bolt at a player",
+  "authors": ["Gurkan"],
+  "contact": {},
+
+  "license": "AGPL-3.0",
+
+  "environment": "server",
+  "entrypoints": {
+    "main": [
+      {
+        "adapter": "kotlin",
+        "value": "me.gurkz.smitecommand.SmiteCommandMod"
+      }
+    ]
+  },
+
+  "mixins": [
+    "smitecommand.mixins.json"
+  ],
+
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric": "*",
+    "minecraft": "${minecraft_version}",
+    "fabric-permissions-api-v0": "*",
+    "fabric-language-kotlin": ">=1.13.0+kotlin.2.1.0"
+  }
+}
