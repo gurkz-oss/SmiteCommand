@@ -9,7 +9,7 @@ import net.minecraft.server.command.ServerCommandSource
 import net.minecraft.text.Text
 
 @Throws(CommandSyntaxException::class)
-fun smite(ctx: CommandContext<ServerCommandSource>): Int {
+fun smite(ctx: CommandContext<ServerCommandSource>, message: String): Int {
     val target = EntityArgumentType.getPlayer(ctx, "target")
 
     val world = target.serverWorld
@@ -19,6 +19,6 @@ fun smite(ctx: CommandContext<ServerCommandSource>): Int {
 
     world.spawnEntity(lightningEntity)
 
-    ctx.source.sendFeedback({ Text.literal("struck ${target.name.string} with lightning") }, false)
+    ctx.source.sendFeedback({ Text.literal(message.replace("<target.name>", target.name.string)) }, false)
     return 1
 }

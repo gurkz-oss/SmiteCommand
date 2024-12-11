@@ -3,6 +3,7 @@ package me.gurkz.smitecommand
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.context.CommandContext
+import me.gurkz.gurkanslib.config.ConfigManager.register
 import me.gurkz.smitecommand.command.smite
 import me.lucko.fabric.api.permissions.v0.Permissions
 import net.fabricmc.api.ModInitializer
@@ -20,6 +21,9 @@ object SmiteCommandMod : ModInitializer {
     private val COMMANDS = ArrayList<LiteralArgumentBuilder<ServerCommandSource?>>()
     private const val MOD_ID: String = "smitecommand"
     private val LOGGER: Logger = LoggerFactory.getLogger(MOD_ID)
+    private var CONFIG: SmiteCommandConfig = register(
+        SmiteCommandConfig::class.java, "GurkansSmite.json"
+    ) { newConfig: SmiteCommandConfig -> CONFIG = newConfig }
 
     private fun addCommand(command: LiteralArgumentBuilder<ServerCommandSource?>) {
         COMMANDS.add(command)
@@ -32,7 +36,7 @@ object SmiteCommandMod : ModInitializer {
             CommandManager.literal("smite").requires(Permissions.require("smitecommand.smite", 4)).then(
                 CommandManager.argument("target", EntityArgumentType.player())
                     .executes { ctx: CommandContext<ServerCommandSource> ->
-                        smite(ctx)
+                        smite(ctx, CONFIG.message)
                     })
         )
 

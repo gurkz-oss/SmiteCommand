@@ -26,6 +26,8 @@ dependencies {
     modImplementation("net.fabricmc:fabric-language-kotlin:${property("fabric_kotlin_version")}")
     modImplementation("net.fabricmc.fabric-api:fabric-api:${property("fabric_version")}")
 
+    modImplementation("me.gurkz:gurkanslib:${property("gurkanslib_version")}")
+
     include("me.lucko:fabric-permissions-api:${property("fabric_permissions_api_version")}")?.let { modImplementation(it) }
 }
 
