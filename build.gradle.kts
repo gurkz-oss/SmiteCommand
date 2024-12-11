@@ -1,3 +1,4 @@
+import org.apache.tools.ant.filters.ReplaceTokens
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -6,6 +7,9 @@ plugins {
     id("org.jetbrains.kotlin.jvm") version "2.1.0"
     java
 }
+
+val mcVersions = property("supported_versions")!!
+val targetVersion = mcVersions.toString().split(";")[0]
 
 group = property("maven_group")!!
 version = property("mod_version")!!
@@ -16,10 +20,13 @@ repositories {
     // Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
     // See https://docs.gradle.org/current/userguide/declaring_repositories.html
     // for more information about repositories.
+    maven {
+        url = uri("https://maven.gurkz.me/releases")
+    }
 }
 
 dependencies {
-    minecraft("com.mojang:minecraft:${property("minecraft_version")}")
+    minecraft("com.mojang:minecraft:$targetVersion")
     mappings("net.fabricmc:yarn:${property("yarn_mappings")}:v2")
     modImplementation("net.fabricmc:fabric-loader:${property("loader_version")}")
 
@@ -37,7 +44,7 @@ tasks {
         inputs.property("version", project.version)
         filesMatching("fabric.mod.json") {
             expand(getProperties())
-            expand(mutableMapOf("version" to project.version))
+            filter<ReplaceTokens>("tokens" to mapOf("supported_versions" to mcVersions.toString().split(";").joinToString("\",\""), "version" to project.version))
         }
     }
 
