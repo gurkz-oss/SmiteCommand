@@ -36,7 +36,7 @@ object SmiteCommandMod : ModInitializer {
             CommandManager.literal("smite").requires(Permissions.require("smitecommand.smite", 4)).then(
                 CommandManager.argument("target", EntityArgumentType.player())
                     .executes { ctx: CommandContext<ServerCommandSource> ->
-                        smite(ctx, CONFIG.message)
+                        smite(ctx, CONFIG.messageConfig)
                     })
         )
 
