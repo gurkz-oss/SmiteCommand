@@ -36,6 +36,9 @@ dependencies {
     modImplementation("me.gurkz:gurkanslib:${property("gurkanslib_version")}")
 
     include("me.lucko:fabric-permissions-api:${property("fabric_permissions_api_version")}")?.let { modImplementation(it) }
+
+    modCompileOnly("net.kyori:adventure-platform-mod-shared-fabric-repack:${property("adventure_version")}")
+    implementation("net.kyori:adventure-text-minimessage:${property("minimessage_version")}")
 }
 
 tasks {
