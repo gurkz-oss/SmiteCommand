@@ -3,11 +3,12 @@ package me.gurkz.smitecommand.command
 import com.mojang.brigadier.context.CommandContext
 import com.mojang.brigadier.exceptions.CommandSyntaxException
 import me.gurkz.smitecommand.MessageConfigKeys
+import net.kyori.adventure.text.minimessage.MiniMessage
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
 import net.minecraft.command.argument.EntityArgumentType
 import net.minecraft.entity.EntityType
 import net.minecraft.entity.LightningEntity
 import net.minecraft.server.command.ServerCommandSource
-import net.minecraft.text.Text
 
 @Throws(CommandSyntaxException::class)
 fun smite(ctx: CommandContext<ServerCommandSource>, messageConfig: Map<MessageConfigKeys, String?>): Int {
@@ -20,12 +21,19 @@ fun smite(ctx: CommandContext<ServerCommandSource>, messageConfig: Map<MessageCo
 
     world.spawnEntity(lightningEntity)
 
-    if (messageConfig[MessageConfigKeys.SenderMessage] != null) {
-        ctx.source.sendFeedback({ Text.literal(messageConfig[MessageConfigKeys.SenderMessage]?.replace("<target.name>", target.name.string)) }, false)
+    val miniMessage = MiniMessage.miniMessage()
+
+    val senderMessage = messageConfig[MessageConfigKeys.SenderMessage]
+    val targetMessage = messageConfig[MessageConfigKeys.TargetMessage]
+
+    if (senderMessage != null) {
+        ctx.source.sendMessage(miniMessage.deserialize(senderMessage, Placeholder.unparsed("target-name",
+            target.name.string
+        )))
     }
 
-    if (messageConfig[MessageConfigKeys.TargetMessage] !== null) {
-       target.sendMessage(Text.literal(messageConfig[MessageConfigKeys.TargetMessage]))
+    if (targetMessage !== null) {
+        target.sendMessage(miniMessage.deserialize(targetMessage))
     }
 
 
