@@ -9,6 +9,7 @@ import me.lucko.fabric.api.permissions.v0.Permissions
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
+import net.fabricmc.loader.api.FabricLoader
 import net.kyori.adventure.platform.modcommon.MinecraftServerAudiences
 import net.minecraft.command.CommandRegistryAccess
 import net.minecraft.command.argument.EntityArgumentType
@@ -18,7 +19,9 @@ import net.minecraft.server.command.CommandManager.RegistrationEnvironment
 import net.minecraft.server.command.ServerCommandSource
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import java.util.*
 import java.util.function.Consumer
+import kotlin.collections.ArrayList
 
 object SmiteCommandMod : ModInitializer {
     @Volatile
@@ -29,6 +32,7 @@ object SmiteCommandMod : ModInitializer {
     private var CONFIG: SmiteCommandConfig = register(
         SmiteCommandConfig::class.java, "GurkansSmite.json"
     ) { newConfig: SmiteCommandConfig -> CONFIG = newConfig }
+    private val VERSION: Optional<String>? = FabricLoader.getInstance().getModContainer(MOD_ID).map { container -> container.metadata.version.toString() }
 
     fun adventure(): MinecraftServerAudiences {
         val ret = this.adventure
@@ -41,7 +45,7 @@ object SmiteCommandMod : ModInitializer {
     }
 
     override fun onInitialize() {
-        LOGGER.info("hello from smite command 1.0.0")
+        LOGGER.info("hello from smite command $VERSION")
 
         addCommand(
             CommandManager.literal("smite").requires(Permissions.require("smitecommand.smite", 4)).then(
