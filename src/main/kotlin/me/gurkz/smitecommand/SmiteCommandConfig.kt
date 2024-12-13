@@ -7,7 +7,7 @@ enum class MessageConfigKeys {
 
 class SmiteCommandConfig {
     val messageConfig = mapOf<MessageConfigKeys, String?>(
-        MessageConfigKeys.SenderMessage to "struck <target.name> with lightning!",
-        MessageConfigKeys.TargetMessage to "you got struck by lightning!"
+        MessageConfigKeys.SenderMessage to "<bold>struck <target-name> with lightning!</bold>",
+        MessageConfigKeys.TargetMessage to "<bold>you got struck by lightning!</bold>"
     )
 }
