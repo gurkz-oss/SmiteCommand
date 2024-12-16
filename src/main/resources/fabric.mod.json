@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "smitecommand",
-  "version": "${version}",
+  "version": "@version@",
 
   "name": "SmiteCommand",
   "description": "a command that summons a lightning bolt at a player",
@@ -27,8 +27,11 @@
   "depends": {
     "fabricloader": ">=${loader_version}",
     "fabric": "*",
-    "minecraft": "${minecraft_version}",
+    "minecraft": [
+      "@supported_versions@"
+    ],
     "fabric-permissions-api-v0": "*",
-    "fabric-language-kotlin": ">=1.13.0+kotlin.2.1.0"
+    "fabric-language-kotlin": ">=1.13.0+kotlin.2.1.0",
+    "gurkanslib": "^${gurkanslib_version}"
   }
 }

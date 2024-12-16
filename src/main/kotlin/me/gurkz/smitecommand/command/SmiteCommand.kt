@@ -2,14 +2,16 @@ package me.gurkz.smitecommand.command
 
 import com.mojang.brigadier.context.CommandContext
 import com.mojang.brigadier.exceptions.CommandSyntaxException
+import me.gurkz.smitecommand.MessageConfigKeys
+import net.kyori.adventure.text.minimessage.MiniMessage
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
 import net.minecraft.command.argument.EntityArgumentType
 import net.minecraft.entity.EntityType
 import net.minecraft.entity.LightningEntity
 import net.minecraft.server.command.ServerCommandSource
-import net.minecraft.text.Text
 
 @Throws(CommandSyntaxException::class)
-fun smite(ctx: CommandContext<ServerCommandSource>): Int {
+fun smite(ctx: CommandContext<ServerCommandSource>, messageConfig: Map<MessageConfigKeys, String?>): Int {
     val target = EntityArgumentType.getPlayer(ctx, "target")
 
     val world = target.serverWorld
@@ -19,6 +21,21 @@ fun smite(ctx: CommandContext<ServerCommandSource>): Int {
 
     world.spawnEntity(lightningEntity)
 
-    ctx.source.sendFeedback({ Text.literal("struck ${target.name.string} with lightning") }, false)
+    val miniMessage = MiniMessage.miniMessage()
+
+    val senderMessage = messageConfig[MessageConfigKeys.SenderMessage]
+    val targetMessage = messageConfig[MessageConfigKeys.TargetMessage]
+
+    if (senderMessage != null) {
+        ctx.source.sendMessage(miniMessage.deserialize(senderMessage, Placeholder.unparsed("target-name",
+            target.name.string
+        )))
+    }
+
+    if (targetMessage !== null) {
+        target.sendMessage(miniMessage.deserialize(targetMessage))
+    }
+
+
     return 1
 }
