@@ -19,9 +19,9 @@ import net.minecraft.server.command.CommandManager.RegistrationEnvironment
 import net.minecraft.server.command.ServerCommandSource
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import java.util.*
 import java.util.function.Consumer
 import kotlin.collections.ArrayList
+import kotlin.jvm.optionals.getOrNull
 
 object SmiteCommandMod : ModInitializer {
     @Volatile
@@ -32,7 +32,7 @@ object SmiteCommandMod : ModInitializer {
     private var CONFIG: SmiteCommandConfig = register(
         SmiteCommandConfig::class.java, "GurkansSmite.json"
     ) { newConfig: SmiteCommandConfig -> CONFIG = newConfig }
-    private val VERSION: Optional<String>? = FabricLoader.getInstance().getModContainer(MOD_ID).map { container -> container.metadata.version.toString() }
+    private val VERSION: String? = FabricLoader.getInstance().getModContainer(MOD_ID).map { container -> container.metadata.version.toString() }.getOrNull()
 
     fun adventure(): MinecraftServerAudiences {
         val ret = this.adventure
@@ -49,7 +49,7 @@ object SmiteCommandMod : ModInitializer {
 
         addCommand(
             CommandManager.literal("smite").requires(Permissions.require("smitecommand.smite", 4)).then(
-                CommandManager.argument("target", EntityArgumentType.player())
+                CommandManager.argument("targets", EntityArgumentType.players())
                     .executes { ctx: CommandContext<ServerCommandSource> ->
                         smite(ctx, CONFIG.messageConfig)
                     })

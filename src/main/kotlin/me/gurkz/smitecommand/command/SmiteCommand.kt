@@ -12,30 +12,37 @@ import net.minecraft.server.command.ServerCommandSource
 
 @Throws(CommandSyntaxException::class)
 fun smite(ctx: CommandContext<ServerCommandSource>, messageConfig: Map<MessageConfigKeys, String?>): Int {
-    val target = EntityArgumentType.getPlayer(ctx, "target")
-
-    val world = target.serverWorld
-    val lightningEntity = LightningEntity(EntityType.LIGHTNING_BOLT, world)
-
-    lightningEntity.setPosition(target.pos)
-
-    world.spawnEntity(lightningEntity)
+    val targets = EntityArgumentType.getPlayers(ctx, "targets")
 
     val miniMessage = MiniMessage.miniMessage()
-
     val senderMessage = messageConfig[MessageConfigKeys.SenderMessage]
     val targetMessage = messageConfig[MessageConfigKeys.TargetMessage]
 
+    val usernames = if (targets.size == 1) {
+        targets.first().name.string
+    } else {
+        targets.joinToString(", ") { it.name.string }
+    }
+
     if (senderMessage != null) {
         ctx.source.sendMessage(miniMessage.deserialize(senderMessage, Placeholder.unparsed("target-name",
-            target.name.string
+            usernames
         )))
     }
 
-    if (targetMessage !== null) {
-        target.sendMessage(miniMessage.deserialize(targetMessage))
-    }
+    for (target in targets) {
+        println("target")
+        val world = target.serverWorld
+        val lightningEntity = LightningEntity(EntityType.LIGHTNING_BOLT, world)
 
+        lightningEntity.setPosition(target.pos)
+
+        world.spawnEntity(lightningEntity)
+
+        if (targetMessage !== null) {
+            target.sendMessage(miniMessage.deserialize(targetMessage))
+        }
+    }
 
     return 1
 }
